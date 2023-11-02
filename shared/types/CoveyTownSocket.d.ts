@@ -137,8 +137,8 @@ export interface ChessMove {
  */
 export interface ChessGameState extends WinnableGameState {
   moves: ReadonlyArray<TicTacToeMove>;
-  x?: PlayerID;
-  o?: PlayerID;
+  white?: PlayerID;
+  black?: PlayerID;
 }
 
 

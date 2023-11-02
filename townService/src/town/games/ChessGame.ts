@@ -11,8 +11,8 @@ import { GameMove, ChessGameState, ChessMove, IChessPiece } from '../../types/Co
 import Game from './Game';
 
 /**
- * A TicTacToeGame is a Game that implements the rules of Tic Tac Toe.
- * @see https://en.wikipedia.org/wiki/Tic-tac-toe
+ * A ChessGame is a Game that implements the rules of chess.
+ * @see https://en.wikipedia.org/wiki/Rules_of_chess
  */
 
 export default class ChessGame extends Game<ChessGameState, ChessMove> {
@@ -55,13 +55,13 @@ export default class ChessGame extends Game<ChessGameState, ChessMove> {
       this.state = {
         ...this.state,
         status: 'OVER',
-        winner: this.state.x,
+        winner: this.state.white,
       };
     } else if (wk === 0) {
       this.state = {
         ...this.state,
         status: 'OVER',
-        winner: this.state.o,
+        winner: this.state.black,
       };
     }
   }
@@ -103,25 +103,26 @@ export default class ChessGame extends Game<ChessGameState, ChessMove> {
    * @param player The player to join the game
    * @throws InvalidParametersError if the player is already in the game (PLAYER_ALREADY_IN_GAME_MESSAGE)
    *  or the game is full (GAME_FULL_MESSAGE)
+   * 
    */
   protected _join(player: Player): void {
-    if (this.state.x === player.id || this.state.o === player.id) {
+    if (this.state.white === player.id || this.state.black === player.id) {
       throw new InvalidParametersError(PLAYER_ALREADY_IN_GAME_MESSAGE);
     }
-    if (!this.state.x) {
+    if (!this.state.white) {
       this.state = {
         ...this.state,
-        x: player.id,
+        white: player.id,
       };
-    } else if (!this.state.o) {
+    } else if (!this.state.black) {
       this.state = {
         ...this.state,
-        o: player.id,
+        black: player.id,
       };
     } else {
       throw new InvalidParametersError(GAME_FULL_MESSAGE);
     }
-    if (this.state.x && this.state.o) {
+    if (this.state.white && this.state.black) {
       this.state = {
         ...this.state,
         status: 'IN_PROGRESS',
@@ -141,28 +142,28 @@ export default class ChessGame extends Game<ChessGameState, ChessMove> {
    * @throws InvalidParametersError if the player is not in the game (PLAYER_NOT_IN_GAME_MESSAGE)
    */
   protected _leave(player: Player): void {
-    if (this.state.x !== player.id && this.state.o !== player.id) {
+    if (this.state.white !== player.id && this.state.black !== player.id) {
       throw new InvalidParametersError(PLAYER_NOT_IN_GAME_MESSAGE);
     }
     // Handles case where the game has not started yet
-    if (this.state.o === undefined) {
+    if (this.state.black === undefined) {
       this.state = {
         moves: [],
         status: 'WAITING_TO_START',
       };
       return;
     }
-    if (this.state.x === player.id) {
+    if (this.state.white === player.id) {
       this.state = {
         ...this.state,
         status: 'OVER',
-        winner: this.state.o,
+        winner: this.state.black,
       };
     } else {
       this.state = {
         ...this.state,
         status: 'OVER',
-        winner: this.state.x,
+        winner: this.state.white,
       };
     }
   }
