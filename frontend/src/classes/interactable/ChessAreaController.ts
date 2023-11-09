@@ -8,14 +8,18 @@ import {
   ChessMove,
 } from '../../types/CoveyTownSocket';
 import PlayerController from '../PlayerController';
+
+import Pawn from '../../../../townService/src/town/games/Pawn';
 import GameAreaController, { GameEventTypes } from './GameAreaController';
 
+
+export type ChessCell =  IChessPiece | undefined;
 export const PLAYER_NOT_IN_GAME_ERROR = 'Player is not in game';
 
 export const NO_GAME_IN_PROGRESS_ERROR = 'No game in progress';
 
 export type ChessEvents = GameEventTypes & {
-  boardChanged: (board: IChessPiece[][]) => void;
+  boardChanged: (board: ChessCell[][]) => void;
   turnChanged: (isOurTurn: boolean) => void;
 };
 
@@ -36,13 +40,24 @@ export default class ChessAreaController extends GameAreaController<ChessGameSta
   1 [0][0] [1][0] [2][0] [3][0] ...
        A      B     C     D      E  F  G  H  (x, y)
   */
-  protected _board: IChessPiece[][] = [];
+  protected _board: ChessCell[][] = [
+    [undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined],
+    [new Pawn('B', 6, 0),new Pawn('B', 6, 1),new Pawn('B', 6, 2),new Pawn('B', 6, 3),new Pawn('B', 6, 4),new Pawn('B', 6, 5),new Pawn('B', 6, 6),new Pawn('B', 6, 7)],
+    [undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined],
+    [undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined],
+    [undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined],
+    [undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined],
+    [undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined],
+    [undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined],
+    [new Pawn('W', 1, 0),new Pawn('W', 1, 1),new Pawn('W', 1, 2),new Pawn('W', 1, 3),new Pawn('W', 1, 4),new Pawn('W', 1, 5),new Pawn('W', 1, 6),new Pawn('W', 1, 7)],
+    [undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined],
+  ];
 
   /**
    * TODO: add documentation
    */
-  get board(): IChessPiece[][] {
-    return [][0];
+  get board(): ChessCell[][] {
+    return this.board;
   }
 
   /**
@@ -149,7 +164,7 @@ export default class ChessAreaController extends GameAreaController<ChessGameSta
   }
 
   /**
-   * Updates the internal state of this TicTacToeAreaController to match the new model.
+   * Updates the internal state of this ChessAreaController to match the new model.
    *
    * Calls super._updateFrom, which updates the occupants of this game area and
    * other common properties (including this._model).
@@ -165,8 +180,8 @@ export default class ChessAreaController extends GameAreaController<ChessGameSta
     super._updateFrom(newModel);
     const newState = newModel.game;
     if (newState) {
-      // normally, the TicTacToe game makes a new board here
-      const newBoard: IChessPiece[][] = [];
+
+      const newBoard: ChessCell[][] = [[]];
 
       // then, it fills it up
       /*

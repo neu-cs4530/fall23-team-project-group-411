@@ -1,7 +1,9 @@
 import InvalidParametersError, { INVALID_MOVE_MESSAGE } from '../../lib/InvalidParametersError';
 import { ChessColor, ChessMove, ChessSquare, IChessPiece } from '../../types/CoveyTownSocket';
+import ChessCell from '../../../../frontend/src/classes/interactable/ChessAreaController'
 
-class Pawn implements IChessPiece {
+
+export default class Pawn implements IChessPiece {
   color: ChessColor;
 
   row: ChessSquare;
@@ -20,7 +22,7 @@ class Pawn implements IChessPiece {
   validate_move(
     newRow: ChessSquare,
     newCol: ChessSquare,
-    board: IChessPiece[][],
+    board: ChessCell[][],
     moves: ReadonlyArray<ChessMove>,
   ) {
     if (this.color === 'W') {

@@ -114,7 +114,7 @@ export interface IChessPiece {
   col: ChessSquare;
   type: 'K' | 'Q' | 'R' | 'B' | 'N' | 'P' | 'None';
 
-  validate_move(newRow: ChessSquare, newCol: ChessSquare, board: IChessPiece[][], moves: ReadonlyArray<ChessMove>);
+  validate_move(newRow: ChessSquare, newCol: ChessSquare, board: ChessCell[][], moves: ReadonlyArray<ChessMove>);
 }
 
 export type ChessSquare = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;

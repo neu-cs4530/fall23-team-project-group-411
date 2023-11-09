@@ -25,32 +25,19 @@ export default class ChessGame extends Game<ChessGameState, ChessMove> {
 
 
   private get _board() {
-    const { moves } = this.state;
-    const board = [
-      ['','','','','','','','',],
-      ['','','','','','','','',],
-      ['','','','','','','','',],
-      ['','','','','','','','',],
-      ['','','','','','','','',],
-      ['','','','','','','','',],
-      ['','','','','','','','',],
-      ['','','','','','','','',],
-    ];
-
-    return board;
+    return [[]];
   }
 
   private _checkForGameEnding() {
-    // const board = this._board;
     // let wk = 0;
     // let bk = 0;
     // for (let row = 0; row < 8; row++) {
     //   for (let col = 0; col < 8; col++) {
-    //     if (board[row][col].type === 'K') {
-    //       if (board[row][col].color === 'W') {
+    //     if (this._chessBoard[row][col].type === 'K') {
+    //       if (this._chessBoard[row][col].color === 'W') {
     //         wk += 1;
     //       }
-    //       if (board[row][col].color === 'B') {
+    //       if (this._chessBoard[row][col].color === 'B') {
     //         bk += 1;
     //       }
     //     }
