@@ -47,12 +47,10 @@ export default function TownMap(): JSX.Element {
     };
   }, [coveyTownController]);
 
-  // HZ NOTE: We may need a ChessAreaWrapper here!
   return (
     <div id='app-container'>
       <NewConversationModal />
       <TicTacToeAreaWrapper />
-      <ChessAreaWrapper />
 
       <div id='map-container' />
       <div id='social-container'>
