@@ -15,54 +15,59 @@ import Game from './Game';
  */
 
 export default class ChessGame extends Game<ChessGameState, ChessMove> {
-  private _chessBoard: IChessPiece[][];
 
   public constructor() {
     super({
       moves: [],
       status: 'WAITING_TO_START',
     });
-    this._chessBoard = [[], [], [], [], [], [], [], []];
-    for (let row = 0; row < 8; row++) {
-      this._chessBoard[row] = [];
-      for (let col = 0; col < 8; col++) {
-        this._chessBoard[row][col] = {} as IChessPiece;
-      }
-    }
   }
 
   private get _board() {
-    return this._chessBoard;
+    const { moves } = this.state;
+    const board = [
+      ['','','','','','','','',],
+      ['','','','','','','','',],
+      ['','','','','','','','',],
+      ['','','','','','','','',],
+      ['','','','','','','','',],
+      ['','','','','','','','',],
+      ['','','','','','','','',],
+      ['','','','','','','','',],
+    ];
+
+    return board;
   }
 
   private _checkForGameEnding() {
-    let wk = 0;
-    let bk = 0;
-    for (let row = 0; row < 8; row++) {
-      for (let col = 0; col < 8; col++) {
-        if (this._chessBoard[row][col].type === 'K') {
-          if (this._chessBoard[row][col].color === 'W') {
-            wk += 1;
-          }
-          if (this._chessBoard[row][col].color === 'B') {
-            bk += 1;
-          }
-        }
-      }
-    }
-    if (bk === 0) {
-      this.state = {
-        ...this.state,
-        status: 'OVER',
-        winner: this.state.white,
-      };
-    } else if (wk === 0) {
-      this.state = {
-        ...this.state,
-        status: 'OVER',
-        winner: this.state.black,
-      };
-    }
+    // const board = this._board;
+    // let wk = 0;
+    // let bk = 0;
+    // for (let row = 0; row < 8; row++) {
+    //   for (let col = 0; col < 8; col++) {
+    //     if (board[row][col].type === 'K') {
+    //       if (board[row][col].color === 'W') {
+    //         wk += 1;
+    //       }
+    //       if (board[row][col].color === 'B') {
+    //         bk += 1;
+    //       }
+    //     }
+    //   }
+    // }
+    // if (bk === 0) {
+    //   this.state = {
+    //     ...this.state,
+    //     status: 'OVER',
+    //     winner: this.state.white,
+    //   };
+    // } else if (wk === 0) {
+    //   this.state = {
+    //     ...this.state,
+    //     status: 'OVER',
+    //     winner: this.state.black,
+    //   };
+    // }
   }
 
   private _applyMove(move: ChessMove): void {
@@ -73,24 +78,17 @@ export default class ChessGame extends Game<ChessGameState, ChessMove> {
     this._checkForGameEnding();
   }
 
+  
   private _validateMove(move: ChessMove) {
     // A move is only valid if it is the player's turn
     if (move.gamePiece?.color === 'W' && this.state.moves.length % 2 === 1) {
       throw new InvalidParametersError(MOVE_NOT_YOUR_TURN_MESSAGE);
-    } else if (move.gamePiece?.color === 'B' && this.state.moves.length % 2 === 0) {
+    } else if (move.gamePiece?.color  === 'B' && this.state.moves.length % 2 === 0) {
       throw new InvalidParametersError(MOVE_NOT_YOUR_TURN_MESSAGE);
     }
     // A move is valid only if game is in progress
     if (this.state.status !== 'IN_PROGRESS') {
       throw new InvalidParametersError(GAME_NOT_IN_PROGRESS_MESSAGE);
-    }
-    const ourColor = move.gamePiece?.color;
-    const ourBoard = this._board;
-    // First Check if our dest space is
-    if (ourBoard[move.newRow][move.newCol].color === ourColor) {
-      throw new InvalidParametersError(
-        'INVALID MOVE: CANNOT TAKE YOUR OWN PIECE (ChessGame.ts - _validateMove)',
-      );
     }
   }
 
@@ -98,13 +96,8 @@ export default class ChessGame extends Game<ChessGameState, ChessMove> {
    * TODO:
    */
   public applyMove(move: GameMove<ChessMove>): void {
-    this._validateMove(move.move);
-    move.move.gamePiece?.validate_move(
-      move.move.newRow,
-      move.move.newCol,
-      this._board,
-      this.state.moves,
-    );
+    this._validateMove(move.move)
+    move.move.gamePiece?.validate_move(move.move.newRow,move.move.newCol, this._board, this.state.moves);
     this._applyMove(move.move);
   }
 
