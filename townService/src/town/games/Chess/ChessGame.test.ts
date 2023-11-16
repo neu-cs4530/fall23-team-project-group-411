@@ -5,6 +5,8 @@ import {
   PLAYER_NOT_IN_GAME_MESSAGE,
 } from '../../../lib/InvalidParametersError';
 import ChessGame from './ChessGame';
+import { ChessMove } from '../../../types/CoveyTownSocket';
+import Pawn from './ChessPieces/Pawn';
 
 describe('ChessGame', () => {
   let game: ChessGame;
@@ -13,7 +15,7 @@ describe('ChessGame', () => {
     game = new ChessGame();
   });
 
-  describe('[T1.1] _join', () => {
+  describe('Testing _join', () => {
     it('should throw an error if the player is already in the game', () => {
       const player = createPlayerForTesting();
       game.join(player);
@@ -60,7 +62,8 @@ describe('ChessGame', () => {
       });
     });
   });
-  describe('[T1.2] _leave', () => {
+
+  describe('Testing _leave', () => {
     it('should throw an error if the player is not in the game', () => {
       expect(() => game.leave(createPlayerForTesting())).toThrowError(PLAYER_NOT_IN_GAME_MESSAGE);
       const player = createPlayerForTesting();
@@ -118,5 +121,45 @@ describe('ChessGame', () => {
         expect(game.state.winner).toBeUndefined();
       });
     });
+  });
+
+  describe('Testing new board creation', () => {
+    const game = new ChessGame();
+    game.state.board = ChessGame.createNewBoard();
+
+    describe('Testing Rook Locations', () => {
+      expect(game.state.board[0][0]?.type).toEqual('R');
+      expect(game.state.board[0][0]?.color).toEqual('W');
+
+      expect(game.state.board[0][7]?.type).toEqual('R');
+      expect(game.state.board[0][7]?.color).toEqual('W');
+
+      expect(game.state.board[7][0]?.type).toEqual('R');
+      expect(game.state.board[7][0]?.color).toEqual('B');
+
+      expect(game.state.board[7][7]?.type).toEqual('R');
+      expect(game.state.board[7][7]?.color).toEqual('B');
+    });
+  });
+
+  describe('Testing move application', () => {
+    const player1 = createPlayerForTesting();
+    const player2 = createPlayerForTesting();
+
+    beforeEach(() => {
+      game = new ChessGame();
+      game.join(player1);
+      game.join(player2);
+    });
+
+    it('should throw an error when a move is made out of turn', () => {
+
+    });
+
+    it('should update the board each time a move is made', () => {
+
+    });
+
+
   });
 });

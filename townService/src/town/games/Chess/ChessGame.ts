@@ -23,10 +23,12 @@ export default class ChessGame extends Game<ChessGameState, ChessMove> {
     super({
       moves: [],
       status: 'WAITING_TO_START',
+      board: ChessGame.createNewBoard(),
     });
     
   }
 
+<<<<<<< Updated upstream
 
   private get _board() {
     const { moves } = this.state;
@@ -50,16 +52,18 @@ export default class ChessGame extends Game<ChessGameState, ChessMove> {
     return board;
   }
 
+=======
+>>>>>>> Stashed changes
   private _checkForGameEnding() {
     let wk = 0;
     let bk = 0;
     for (let row = 0; row < 8; row++) {
       for (let col = 0; col < 8; col++) {
-        if (this._board[row][col]?.type === 'K') {
-          if (this._board[row][col]?.color === 'W') {
+        if (super.state.board[row][col]?.type === 'K') {
+          if (super.state.board[row][col]?.color === 'W') {
             wk += 1;
           }
-          if (this._board[row][col]?.color === 'B') {
+          if (super.state.board[row][col]?.color === 'B') {
             bk += 1;
           }
         }
@@ -100,9 +104,13 @@ export default class ChessGame extends Game<ChessGameState, ChessMove> {
       throw new InvalidParametersError(GAME_NOT_IN_PROGRESS_MESSAGE);
     }
     const ourColor = move.gamePiece?.color;
+<<<<<<< Updated upstream
     const ourBoard = this._board;
+=======
+
+>>>>>>> Stashed changes
     // First Check if our dest space is
-    if (ourBoard[move.newRow][move.newCol]?.color === ourColor) {
+    if (super.state.board[move.newRow][move.newCol]?.color === ourColor) {
       throw new InvalidParametersError(
         'INVALID MOVE: CANNOT TAKE YOUR OWN PIECE (ChessGame.ts - _validateMove)',
       );
@@ -117,10 +125,15 @@ export default class ChessGame extends Game<ChessGameState, ChessMove> {
     move.move.gamePiece?.validate_move(
       move.move.newRow,
       move.move.newCol,
+<<<<<<< Updated upstream
       this._board, 
+=======
+      super.state.board,
+>>>>>>> Stashed changes
       this.state.moves,
     );
     this._applyMove(move.move);
+    // add in logic for moving the physical piece in the board.
   }
 
   /**
@@ -177,6 +190,7 @@ export default class ChessGame extends Game<ChessGameState, ChessMove> {
       this.state = {
         moves: [],
         status: 'WAITING_TO_START',
+        board: super.state.board,
       };
       return;
     }

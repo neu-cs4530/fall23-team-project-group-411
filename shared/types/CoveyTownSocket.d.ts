@@ -108,13 +108,11 @@ export interface TicTacToeMove {
   col: TicTacToeGridPosition;
 }
 
-
-
 export interface IChessPiece {
   color: ChessColor;
   row: ChessSquare;
   col: ChessSquare;
-  type: 'K' | 'Q' | 'R' | 'B' | 'N' | 'P' | 'None';
+  type: 'K' | 'Q' | 'R' | 'B' | 'N' | 'P';
 
   validate_move(newRow: ChessSquare, newCol: ChessSquare, board: ChessCell[][], moves: ReadonlyArray<ChessMove>);
 }
@@ -123,7 +121,6 @@ export type ChessCell = IChessPiece | undefined;
 
 export type ChessSquare = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
 export type ChessColor = 'W' | 'B';
-
 
 /**
  * Type for a move in Chess
@@ -143,6 +140,7 @@ export interface ChessGameState extends WinnableGameState {
   moves: ReadonlyArray<ChessMove>;
   white?: PlayerID;
   black?: PlayerID;
+  board: ChessCell[][];
 }
 
 
@@ -156,8 +154,6 @@ export interface TicTacToeGameState extends WinnableGameState {
   x?: PlayerID;
   o?: PlayerID;
 }
-
-
 
 export type InteractableID = string;
 export type GameInstanceID = string;

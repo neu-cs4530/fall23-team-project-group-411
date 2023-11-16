@@ -14,7 +14,7 @@ import {
   TownEmitter,
   // IChessPiece,
 } from '../../../types/CoveyTownSocket';
-import * as ChessGameModule from './ChessGame';
+import ChessGame, * as ChessGameModule from './ChessGame';
 import ChessGameArea from './ChessGameArea';
 import Game from '../Game';
 
@@ -23,6 +23,7 @@ class TestingGame extends Game<ChessGameState, ChessMove> {
     super({
       moves: [],
       status: 'WAITING_TO_START',
+      board: ChessGame.createNewBoard(),
     });
   }
 

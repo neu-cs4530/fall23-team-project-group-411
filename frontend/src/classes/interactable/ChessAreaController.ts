@@ -3,23 +3,17 @@ import {
   GameArea,
   GameStatus,
   ChessGameState,
-  IChessPiece,
   ChessColor,
   ChessMove,
-  ChessCell
+  ChessCell,
+  InteractableID
 } from '../../types/CoveyTownSocket';
+import ChessGame from '../../../../townService/src/town/games/Chess/ChessGame';
 import PlayerController from '../PlayerController';
 import GameAreaController, { GameEventTypes } from './GameAreaController';
-
-import Pawn from '../../../../townService/src/town/games/Chess/ChessPieces/Pawn'
-import King from '../../../../townService/src/town/games/Chess/ChessPieces/King'
-import Queen from '../../../../townService/src/town/games/Chess/ChessPieces/Queen'
-
+import TownController from '../TownController';
 export const PLAYER_NOT_IN_GAME_ERROR = 'Player is not in game';
-
 export const NO_GAME_IN_PROGRESS_ERROR = 'No game in progress';
-
-
 
 export type ChessEvents = GameEventTypes & {
   boardChanged: (board: ChessCell[][]) => void;
@@ -30,7 +24,9 @@ export type ChessEvents = GameEventTypes & {
  * This class is responsible for managing the state of the Chess game, and for sending commands to the server
  */
 export default class ChessAreaController extends GameAreaController<ChessGameState, ChessEvents> {
-  // HZ Design request:
+  board: ChessCell[][];
+
+  // Design request:
   // can we make sure that [0][0] returns A1, [1][0] returns B1, etc..
   /* Sort of like this:
   8
@@ -43,29 +39,13 @@ export default class ChessAreaController extends GameAreaController<ChessGameSta
   1 [0][0] [1][0] [2][0] [3][0] ...
        A      B     C     D      E  F  G  H  (x, y)
   */
-  protected _board: ChessCell[][] = this.init_board();
-
-  /*
-  get board with peices in their starting positions
-  */
-  protected init_board(): ChessCell[][] {
-    return  [
-      [undefined,undefined,undefined,new Queen("W",0,3),new King("W",0,4),undefined,undefined,undefined],
-        [new Pawn("W",1,0),new Pawn("W",1,1),new Pawn("W",2,3),new Pawn("W",1,3),new Pawn("W",1,4),new Pawn("W",1,5),new Pawn("W",1,6),new Pawn("W",1,7)],
-        [undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined],
-        [undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined],
-        [undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined],
-        [undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined],
-        [new Pawn("B",6,0),new Pawn("B",6,1),new Pawn("B",6,2),new Pawn("B",6,3),new Pawn("B",6,4),new Pawn("B",6,5),new Pawn("B",6,6),new Pawn("B",6,7)],
-        [undefined,undefined,undefined,new Queen("B",7,3),new King("B",7,4),undefined,undefined,undefined],
-      ];
-  }
-
-  /**
-   * TODO: add documentation
-   */
-  get board(): ChessCell[][] {
-    return this._board;
+  public constructor(id: InteractableID, gameArea: GameArea<ChessGameState>, townController: TownController) {
+    super(id, gameArea, townController);
+    if (gameArea.game) {
+      this.board = gameArea.game.state.board;
+    } else {
+      this.board = ChessGame.createNewBoard();
+    }
   }
 
   /**
@@ -190,7 +170,7 @@ export default class ChessAreaController extends GameAreaController<ChessGameSta
     if (newState) {
       // normally, the TicTacToe game makes a new board here
 
-      const newBoard: ChessCell[][] = this.init_board();
+      const newBoard: ChessCell[][] = ChessGame.createNewBoard();
 
       // have not tested thsis, but it remove the gamepeice at its current position,
       // and puts it in the new spot, updating its row and column position
@@ -204,9 +184,9 @@ export default class ChessAreaController extends GameAreaController<ChessGameSta
         }
       });
 
-      if (!_.isEqual(newBoard, this._board)) {
-        this._board = newBoard;
-        this.emit('boardChanged', this._board);
+      if (!_.isEqual(newBoard, this.board)) {
+        this.board = newBoard;
+        this.emit('boardChanged', this.board);
       }
     }
     const isOurTurn = this.whoseTurn?.id === this._townController.ourPlayer.id;
