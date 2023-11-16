@@ -1,9 +1,9 @@
-import { createPlayerForTesting } from '../../TestUtils';
+import { createPlayerForTesting } from '../../../TestUtils';
 import {
   GAME_FULL_MESSAGE,
   PLAYER_ALREADY_IN_GAME_MESSAGE,
   PLAYER_NOT_IN_GAME_MESSAGE,
-} from '../../lib/InvalidParametersError';
+} from '../../../lib/InvalidParametersError';
 import ChessGame from './ChessGame';
 
 describe('ChessGame', () => {

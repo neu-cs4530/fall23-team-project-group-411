@@ -108,15 +108,25 @@ export interface TicTacToeMove {
   col: TicTacToeGridPosition;
 }
 
+
+
 export interface IChessPiece {
   color: ChessColor;
   row: ChessSquare;
   col: ChessSquare;
   type: 'K' | 'Q' | 'R' | 'B' | 'N' | 'P' | 'None';
 
-  validate_move(newRow: ChessSquare, newCol: ChessSquare, board: IChessPiece[][]);
+  validate_move(newRow: ChessSquare, newCol: ChessSquare, board: ChessCell[][], moves: ReadonlyArray<ChessMove>);
 }
 
+export type Bishop = IChessPiece;
+export type Rook = IChessPiece;
+export type Pawn = IChessPiece;
+export type Queen = IChessPiece;
+export type King = IChessPiece;
+export type Knight = IChessPiece;
+
+export type ChessCell = IChessPiece | undefined;
 export type ChessSquare = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
 export type ChessColor = 'W' | 'B';
 

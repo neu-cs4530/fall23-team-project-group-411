@@ -2,44 +2,43 @@ import InvalidParametersError, {
   GAME_ID_MISSMATCH_MESSAGE,
   GAME_NOT_IN_PROGRESS_MESSAGE,
   INVALID_COMMAND_MESSAGE,
-} from '../../lib/InvalidParametersError';
-import Player from '../../lib/Player';
+} from '../../../lib/InvalidParametersError';
+import Player from '../../../lib/Player';
 import {
   GameInstance,
   InteractableCommand,
   InteractableCommandReturnType,
   InteractableType,
-  ChessGameState,
-} from '../../types/CoveyTownSocket';
-import GameArea from './GameArea';
-import ChessGame from './ChessGame';
+  TicTacToeGameState,
+  TicTacToeMove,
+} from '../../../types/CoveyTownSocket';
+import GameArea from '../GameArea';
+import TicTacToeGame from './TicTacToeGame';
 
 /**
- * A ChessGameArea is a GameArea that hosts a ChessGame.
- * @see ChessGame
+ * A TicTacToeGameArea is a GameArea that hosts a TicTacToeGame.
+ * @see TicTacToeGame
  * @see GameArea
  */
-export default class ChessGameArea extends GameArea<ChessGame> {
+export default class TicTacToeGameArea extends GameArea<TicTacToeGame> {
   protected getType(): InteractableType {
-    return 'ChessArea';
+    return 'TicTacToeArea';
   }
 
-  private _stateUpdated(updatedState: GameInstance<ChessGameState>) {
+  private _stateUpdated(updatedState: GameInstance<TicTacToeGameState>) {
     if (updatedState.state.status === 'OVER') {
       // If we haven't yet recorded the outcome, do so now.
       const gameID = this._game?.id;
       if (gameID && !this._history.find(eachResult => eachResult.gameID === gameID)) {
-        const { white, black } = updatedState.state;
-        if (white && black) {
-          const whiteName =
-            this._occupants.find(eachPlayer => eachPlayer.id === white)?.userName || white;
-          const blackName =
-            this._occupants.find(eachPlayer => eachPlayer.id === black)?.userName || black;
+        const { x, o } = updatedState.state;
+        if (x && o) {
+          const xName = this._occupants.find(eachPlayer => eachPlayer.id === x)?.userName || x;
+          const oName = this._occupants.find(eachPlayer => eachPlayer.id === o)?.userName || o;
           this._history.push({
             gameID,
             scores: {
-              [whiteName]: updatedState.state.winner === white ? 1 : 0,
-              [blackName]: updatedState.state.winner === black ? 1 : 0,
+              [xName]: updatedState.state.winner === x ? 1 : 0,
+              [oName]: updatedState.state.winner === o ? 1 : 0,
             },
           });
         }
@@ -74,7 +73,7 @@ export default class ChessGameArea extends GameArea<ChessGame> {
     command: CommandType,
     player: Player,
   ): InteractableCommandReturnType<CommandType> {
-    if (command.type === 'ChessMove') {
+    if (command.type === 'GameMove') {
       const game = this._game;
       if (!game) {
         throw new InvalidParametersError(GAME_NOT_IN_PROGRESS_MESSAGE);
@@ -85,7 +84,7 @@ export default class ChessGameArea extends GameArea<ChessGame> {
       game.applyMove({
         gameID: command.gameID,
         playerID: player.id,
-        move: command.move,
+        move: command.move as TicTacToeMove,
       });
       this._stateUpdated(game.toModel());
       return undefined as InteractableCommandReturnType<CommandType>;
@@ -93,8 +92,8 @@ export default class ChessGameArea extends GameArea<ChessGame> {
     if (command.type === 'JoinGame') {
       let game = this._game;
       if (!game || game.state.status === 'OVER') {
-        // No chess game in progress, make a new one
-        game = new ChessGame();
+        // No game in progress, make a new one
+        game = new TicTacToeGame();
         this._game = game;
       }
       game.join(player);
@@ -113,7 +112,6 @@ export default class ChessGameArea extends GameArea<ChessGame> {
       this._stateUpdated(game.toModel());
       return undefined as InteractableCommandReturnType<CommandType>;
     }
-
     throw new InvalidParametersError(INVALID_COMMAND_MESSAGE);
   }
 }

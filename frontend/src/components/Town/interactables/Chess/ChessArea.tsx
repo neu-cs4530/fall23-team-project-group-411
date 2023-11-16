@@ -176,7 +176,7 @@ function ChessArea({ interactableID }: { interactableID: InteractableID }): JSX.
 
 /**
  * A wrapper component for the TicTacToeArea component.
- * Determines if the player is currently in a tic tac toe area on the map, and if so,
+ * Determines if the player is currently in a chess area on the map, and if so,
  * renders the TicTacToeArea component in a modal.
  *
  */
@@ -192,6 +192,7 @@ export default function ChessAreaWrapper(): JSX.Element {
   }, [townController, gameArea]);
 
   if (gameArea && gameArea.getData('type') === 'Chess') {
+    console.log('IN CHESS AREA')
     return (
       <Modal isOpen={true} onClose={closeModal} closeOnOverlayClick={false}>
         <ModalOverlay />

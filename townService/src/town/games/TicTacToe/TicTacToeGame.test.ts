@@ -1,4 +1,4 @@
-import { createPlayerForTesting } from '../../TestUtils';
+import { createPlayerForTesting } from '../../../TestUtils';
 import {
   GAME_FULL_MESSAGE,
   GAME_NOT_IN_PROGRESS_MESSAGE,
@@ -6,10 +6,10 @@ import {
   MOVE_NOT_YOUR_TURN_MESSAGE,
   PLAYER_ALREADY_IN_GAME_MESSAGE,
   PLAYER_NOT_IN_GAME_MESSAGE,
-} from '../../lib/InvalidParametersError';
+} from '../../../lib/InvalidParametersError';
 import TicTacToeGame from './TicTacToeGame';
-import Player from '../../lib/Player';
-import { TicTacToeMove } from '../../types/CoveyTownSocket';
+import Player from '../../../lib/Player';
+import { TicTacToeMove } from '../../../types/CoveyTownSocket';
 
 describe('TicTacToeGame', () => {
   let game: TicTacToeGame;

@@ -1,24 +1,23 @@
 import { mock } from 'jest-mock-extended';
 import { nanoid } from 'nanoid';
-import { createPlayerForTesting } from '../../TestUtils';
+import { createPlayerForTesting } from '../../../TestUtils';
 import {
   GAME_ID_MISSMATCH_MESSAGE,
   GAME_NOT_IN_PROGRESS_MESSAGE,
   INVALID_COMMAND_MESSAGE,
-} from '../../lib/InvalidParametersError';
-import Player from '../../lib/Player';
+} from '../../../lib/InvalidParametersError';
+import Player from '../../../lib/Player';
 import {
-  // GameInstanceID,
-  ChessGameState,
-  ChessMove,
+  GameInstanceID,
+  TicTacToeGameState,
+  TicTacToeMove,
   TownEmitter,
-  // IChessPiece,
-} from '../../types/CoveyTownSocket';
-import * as ChessGameModule from './ChessGame';
-import ChessGameArea from './ChessGameArea';
-import Game from './Game';
+} from '../../../types/CoveyTownSocket';
+import TicTacToeGameArea from './TicTacToeGameArea';
+import * as TicTacToeGameModule from './TicTacToeGame';
+import Game from '../Game';
 
-class TestingGame extends Game<ChessGameState, ChessMove> {
+class TestingGame extends Game<TicTacToeGameState, TicTacToeMove> {
   public constructor() {
     super({
       moves: [],
@@ -37,24 +36,24 @@ class TestingGame extends Game<ChessGameState, ChessMove> {
   }
 
   protected _join(player: Player): void {
-    if (this.state.white) {
-      this.state.black = player.id;
+    if (this.state.x) {
+      this.state.o = player.id;
     } else {
-      this.state.white = player.id;
+      this.state.x = player.id;
     }
     this._players.push(player);
   }
 
   protected _leave(): void {}
 }
-describe('ChessArea', () => {
-  let gameArea: ChessGameArea;
+describe('TicTacToeGameArea', () => {
+  let gameArea: TicTacToeGameArea;
   let player1: Player;
   let player2: Player;
   let interactableUpdateSpy: jest.SpyInstance;
   let game: TestingGame;
   beforeEach(() => {
-    const gameConstructorSpy = jest.spyOn(ChessGameModule, 'default');
+    const gameConstructorSpy = jest.spyOn(TicTacToeGameModule, 'default');
     game = new TestingGame();
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore (Testing without using the real game class)
@@ -62,7 +61,7 @@ describe('ChessArea', () => {
 
     player1 = createPlayerForTesting();
     player2 = createPlayerForTesting();
-    gameArea = new ChessGameArea(
+    gameArea = new TicTacToeGameArea(
       nanoid(),
       { x: 0, y: 0, width: 100, height: 100 },
       mock<TownEmitter>(),
@@ -118,12 +117,11 @@ describe('ChessArea', () => {
         });
       });
     });
-    /* describe('[T3.2] when given a GameMove command', () => {
+    describe('[T3.2] when given a GameMove command', () => {
       it('should throw an error when there is no game in progress', () => {
-        const chessPiece : IChessPiece = {color: 'W', row: 1, col: 1, type: 'B', validate_move: () => ()}
         expect(() =>
           gameArea.handleCommand(
-            { type: 'ChessMove', move: { col: 0, row: 0, gamePiece: 'X' }, gameID: nanoid() },
+            { type: 'GameMove', move: { col: 0, row: 0, gamePiece: 'X' }, gameID: nanoid() },
             player1,
           ),
         ).toThrowError(GAME_NOT_IN_PROGRESS_MESSAGE);
@@ -144,7 +142,7 @@ describe('ChessArea', () => {
           ).toThrowError(GAME_ID_MISSMATCH_MESSAGE);
         });
         it('should dispatch the move to the game and call _emitAreaChanged', () => {
-          const move: ChessMove = { col: 0, row: 0, gamePiece: 'X' };
+          const move: TicTacToeMove = { col: 0, row: 0, gamePiece: 'X' };
           const applyMoveSpy = jest.spyOn(game, 'applyMove');
           gameArea.handleCommand({ type: 'GameMove', move, gameID }, player1);
           expect(applyMoveSpy).toHaveBeenCalledWith({
@@ -229,7 +227,7 @@ describe('ChessArea', () => {
           });
         });
       });
-    }); */
+    });
     describe('[T3.3] when given a LeaveGame command', () => {
       describe('when there is no game in progress', () => {
         it('should throw an error', () => {

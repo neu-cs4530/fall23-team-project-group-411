@@ -5,10 +5,10 @@ import InvalidParametersError, {
   MOVE_NOT_YOUR_TURN_MESSAGE,
   PLAYER_ALREADY_IN_GAME_MESSAGE,
   PLAYER_NOT_IN_GAME_MESSAGE,
-} from '../../lib/InvalidParametersError';
-import Player from '../../lib/Player';
-import { GameMove, TicTacToeGameState, TicTacToeMove } from '../../types/CoveyTownSocket';
-import Game from './Game';
+} from '../../../lib/InvalidParametersError';
+import Player from '../../../lib/Player';
+import { GameMove, TicTacToeGameState, TicTacToeMove } from '../../../types/CoveyTownSocket';
+import Game from '../Game';
 
 /**
  * A TicTacToeGame is a Game that implements the rules of Tic Tac Toe.

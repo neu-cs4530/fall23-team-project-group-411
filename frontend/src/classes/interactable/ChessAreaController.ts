@@ -10,12 +10,26 @@ import {
 import PlayerController from '../PlayerController';
 import GameAreaController, { GameEventTypes } from './GameAreaController';
 
+import Pawn from '../interactable/ChessPieces/Pawn'
+
+import Bishop from '../interactable/ChessPieces/Bishop'
+
+import Queen from '../interactable/ChessPieces/Queen'
+
+import Rook from '../interactable/ChessPieces/Rook'
+
+import King from '../interactable/ChessPieces/King'
+
+import Knight from '../interactable/ChessPieces/Knight'
+
 export const PLAYER_NOT_IN_GAME_ERROR = 'Player is not in game';
 
 export const NO_GAME_IN_PROGRESS_ERROR = 'No game in progress';
 
+export type ChessCell = IChessPiece | undefined;
+
 export type ChessEvents = GameEventTypes & {
-  boardChanged: (board: IChessPiece[][]) => void;
+  boardChanged: (board: ChessCell[][]) => void;
   turnChanged: (isOurTurn: boolean) => void;
 };
 
@@ -36,13 +50,29 @@ export default class ChessAreaController extends GameAreaController<ChessGameSta
   1 [0][0] [1][0] [2][0] [3][0] ...
        A      B     C     D      E  F  G  H  (x, y)
   */
-  protected _board: IChessPiece[][] = [];
+  protected _board: ChessCell[][] = this.init_board();
+
+  /*
+  get board with peices in their starting positions
+  */
+  protected init_board(): ChessCell[][] {
+    return  [
+      [new Rook("W", 0, 0), new Knight("W",0,1), new Bishop("W",0,2), new Queen("W", 0, 3), new King("W", 0, 4), new Bishop("W",0,5), new Knight("W",0,6), new Rook("W", 7, 0)],
+      [new Pawn("W",1,0),new Pawn("W",1,1),new Pawn("W",2,3),new Pawn("W",1,3),new Pawn("W",1,4),new Pawn("W",1,5),new Pawn("W",1,6),new Pawn("W",1,7)],
+      [undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined],
+      [undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined],
+      [undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined],
+      [undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined],
+      [new Pawn("B",6,0),new Pawn("B",6,1),new Pawn("B",6,2),new Pawn("B",6,3),new Pawn("B",6,4),new Pawn("B",6,5),new Pawn("B",6,6),new Pawn("B",6,7)],
+      [new Rook("B", 7, 0),new Knight("B",7,1),new Bishop("B",7,2),new Queen("B",7,3),new King("B",7,4),new Bishop("B",7,5),new Knight("B",7,6),new Rook("B", 7, 7)],
+    ];
+  }
 
   /**
    * TODO: add documentation
    */
-  get board(): IChessPiece[][] {
-    return [][0];
+  get board(): ChessCell[][] {
+    return this._board;
   }
 
   /**
@@ -166,14 +196,21 @@ export default class ChessAreaController extends GameAreaController<ChessGameSta
     const newState = newModel.game;
     if (newState) {
       // normally, the TicTacToe game makes a new board here
-      const newBoard: IChessPiece[][] = [];
 
-      // then, it fills it up
-      /*
+      const newBoard: ChessCell[][] = this.init_board();
+
+      // have not tested thsis, but it remove the gamepeice at its current position,
+      // and puts it in the new spot, updating its row and column position
       newState.state.moves.forEach(move => {
-        newBoard[move.row][move.col] = move.gamePiece;
+        const gp = move.gamePiece;
+        if (gp != undefined) {
+          newBoard[gp?.row][gp?.col] = undefined;
+          gp.row = move.newRow;
+          gp.col = move.newCol;
+          newBoard[move.newRow][move.newCol] = gp;
+        }
       });
-      */
+
       if (!_.isEqual(newBoard, this._board)) {
         this._board = newBoard;
         this.emit('boardChanged', this._board);
