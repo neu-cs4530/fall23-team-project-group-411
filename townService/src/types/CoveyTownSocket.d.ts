@@ -15,3 +15,25 @@ export type SocketData = Record<string, never>;
 export type CoveyTownSocket = Socket<ClientToServerEvents, ServerToClientEvents>;
 export type TownEmitter = BroadcastOperator<ServerToClientEvents, SocketData>;
 export type TownEmitterFactory = (townID: string) => TownEmitter;
+
+// =============================
+// ======== CHESS TYPES ========
+// ======= (backend only) ======
+// =============================
+export interface IChessPiece {
+  color: ChessColor;
+  row: ChessBoardPosition;
+  col: ChessBoardPosition;
+  type: 'K' | 'Q' | 'R' | 'B' | 'N' | 'P';
+
+  validate_move(newRow: ChessSquare, newCol: ChessSquare, board: ChessCell[][], moves: ReadonlyArray<ChessMove>);
+}
+export type ChessCell = IChessPiece | undefined;
+
+export type Bishop = IChessPiece;
+export type Rook = IChessPiece;
+export type Pawn = IChessPiece;
+export type Queen = IChessPiece;
+export type King = IChessPiece;
+export type Knight = IChessPiece;
+

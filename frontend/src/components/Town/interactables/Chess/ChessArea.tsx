@@ -28,10 +28,7 @@ import TicTacToeLeaderboard from '../Leaderboard';
 import ChessBoard from './ChessBoard';
 
 /**
- * Chess Area Component
- *
- * TODO: Remove TicTacToe influences, change over to Chess
- *
+ * Chess Area Component.
  */
 function ChessArea({ interactableID }: { interactableID: InteractableID }): JSX.Element {
   const gameAreaController = useInteractableAreaController<ChessAreaController>(interactableID);
@@ -131,7 +128,7 @@ function ChessArea({ interactableID }: { interactableID: InteractableID }): JSX.
   }
 
   return (
-    <Container>
+    <Container maxW={'4xl'}>
       <Accordion allowToggle>
         <AccordionItem>
           <Heading as='h3'>
@@ -175,9 +172,9 @@ function ChessArea({ interactableID }: { interactableID: InteractableID }): JSX.
 }
 
 /**
- * A wrapper component for the TicTacToeArea component.
+ * A wrapper component for the ChessArea component.
  * Determines if the player is currently in a chess area on the map, and if so,
- * renders the TicTacToeArea component in a modal.
+ * renders the ChessArea component in a modal.
  *
  */
 export default function ChessAreaWrapper(): JSX.Element {
@@ -194,7 +191,7 @@ export default function ChessAreaWrapper(): JSX.Element {
   if (gameArea && gameArea.getData('type') === 'Chess') {
     console.log('IN CHESS AREA')
     return (
-      <Modal isOpen={true} onClose={closeModal} closeOnOverlayClick={false}>
+      <Modal isOpen={true} onClose={closeModal} closeOnOverlayClick={false} size={'4xl'}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>{gameArea.name}</ModalHeader>

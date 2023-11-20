@@ -1,5 +1,5 @@
-import { move } from 'ramda';
 import InvalidParametersError, { INVALID_MOVE_MESSAGE } from '../../../../lib/InvalidParametersError';
+<<<<<<< Updated upstream
 import { ChessCell, ChessColor, ChessMove, ChessSquare, IChessPiece } from '../../../../types/CoveyTownSocket';
 import { error } from 'console';
 
@@ -7,10 +7,20 @@ export default class Pawn implements IChessPiece {
   color: ChessColor;
   row: ChessSquare;
   col: ChessSquare;
+=======
+import { ChessCell, ChessColor, ChessMove, ChessBoardPosition, IChessPiece } from '../../../../types/CoveyTownSocket';
+
+export default class Pawn implements IChessPiece {
+  color: ChessColor;
+
+  row: ChessBoardPosition;
+
+  col: ChessBoardPosition;
+>>>>>>> Stashed changes
 
   type: 'K' | 'Q' | 'R' | 'B' | 'N' | 'P' | 'None';
 
-  constructor(color: ChessColor, row: ChessSquare, col: ChessSquare) {
+  constructor(color: ChessColor, row: ChessBoardPosition, col: ChessBoardPosition) {
     this.color = color;
     this.row = row;
     this.col = col;
@@ -18,8 +28,8 @@ export default class Pawn implements IChessPiece {
   }
 
   validate_move(
-    newRow: ChessSquare,
-    newCol: ChessSquare,
+    newRow: ChessBoardPosition,
+    newCol: ChessBoardPosition,
     board: ChessCell[][],
     moves: ReadonlyArray<ChessMove>,
   ) {
@@ -40,7 +50,7 @@ export default class Pawn implements IChessPiece {
         //  en passaunt
         if (newRow === this.row + 1 && (newCol === this.col - 1 || newCol === this.col + 1) && board[this.row][newCol]?.type === 'P' && board[this.row][newCol]?.color === 'B') {
           const i = moves.length-1
-          if (moves[i].gamePiece?.type === 'P' && moves[i].gamePiece?.row === this.row + 2 && moves[i].gamePiece?.col === newCol && moves[i].newCol === newCol && moves[i].newRow === this.row) {
+          if (moves[i].gamePiece.piece.type === 'P' && moves[i].gamePiece.rank === this.row + 2 && moves[i].gamePiece.file === newCol && moves[i].toCol === newCol && moves[i].toRow === this.row) {
             return;
           } 
         }

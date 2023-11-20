@@ -1,18 +1,23 @@
+<<<<<<< Updated upstream
 import InvalidParametersError, {
   INVALID_MOVE_MESSAGE,
 } from '../../../../lib/InvalidParametersError';
 import { ChessCell, ChessColor, ChessMove, ChessSquare, IChessPiece } from '../../../../types/CoveyTownSocket';
+=======
+import InvalidParametersError from '../../../../lib/InvalidParametersError';
+import { ChessColor, ChessMove, ChessBoardPosition, IChessPiece } from '../../../../types/CoveyTownSocket';
+>>>>>>> Stashed changes
 
 export default class Queen implements IChessPiece {
   color: ChessColor;
 
-  row: ChessSquare;
+  row: ChessBoardPosition;
 
-  col: ChessSquare;
+  col: ChessBoardPosition;
 
   type: 'K' | 'Q' | 'R' | 'B' | 'N' | 'P' | 'None';
 
-  constructor(color: ChessColor, row: ChessSquare, col: ChessSquare) {
+  constructor(color: ChessColor, row: ChessBoardPosition, col: ChessBoardPosition) {
     this.color = color;
     this.row = row;
     this.col = col;
@@ -20,8 +25,8 @@ export default class Queen implements IChessPiece {
   }
 
   validate_move(
-    newRow: ChessSquare,
-    newCol: ChessSquare,
+    newRow: ChessBoardPosition,
+    newCol: ChessBoardPosition,
     board: IChessPiece[][],
     moves: ReadonlyArray<ChessMove>,
   ) {
@@ -49,7 +54,7 @@ export default class Queen implements IChessPiece {
     return false;
   }
 
-  private _isPathClear(newRow: ChessSquare, newCol: ChessSquare, board: IChessPiece[][]) {
+  private _isPathClear(newRow: ChessBoardPosition, newCol: ChessBoardPosition, board: IChessPiece[][]) {
     // eslint-disable-next-line no-nested-ternary
     const rowIncrement = newRow > this.row ? 1 : newRow < this.row ? -1 : 0;
     // eslint-disable-next-line no-nested-ternary
