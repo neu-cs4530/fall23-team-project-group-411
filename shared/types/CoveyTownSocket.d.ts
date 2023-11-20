@@ -106,34 +106,6 @@ export type ChessColor = 'W' | 'B';
 /**
  * Represents a piece on a chessboard.
  */
-<<<<<<< Updated upstream
-export interface TicTacToeMove {
-  gamePiece: 'X' | 'O';
-  row: TicTacToeGridPosition;
-  col: TicTacToeGridPosition;
-}
-
-export interface IChessPiece {
-  color: ChessColor;
-  row: ChessSquare;
-  col: ChessSquare;
-  type: 'K' | 'Q' | 'R' | 'B' | 'N' | 'P';
-
-  validate_move(newRow: ChessSquare, newCol: ChessSquare, board: ChessCell[][], moves: ReadonlyArray<ChessMove>);
-}
-
-export type Bishop = IChessPiece;
-export type Rook = IChessPiece;
-export type Pawn = IChessPiece;
-export type Queen = IChessPiece;
-export type King = IChessPiece;
-export type Knight = IChessPiece;
-
-export type ChessCell = IChessPiece | undefined;
-export type ChessSquare = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
-export type ChessColor = 'W' | 'B';
-
-=======
 export interface ChessPiece {
   type: 'P' | 'K' | 'Q' | 'R' | 'B' | 'N';
   color: ChessColor;
@@ -154,7 +126,6 @@ export interface ChessPiecePosition {
   rank: ChessBoardPosition;
 }
 
->>>>>>> Stashed changes
 /**
  * Type for a move in Chess.
  */
@@ -175,7 +146,6 @@ export interface ChessGameState extends WinnableGameState {
   moves: ReadonlyArray<ChessMove>;
   white?: PlayerID;
   black?: PlayerID;
-  board: ChessCell[][];
 }
 // =============================
 
@@ -206,10 +176,7 @@ export interface TicTacToeGameState extends WinnableGameState {
   x?: PlayerID;
   o?: PlayerID;
 }
-<<<<<<< Updated upstream
-=======
 // =============================
->>>>>>> Stashed changes
 
 export type InteractableID = string;
 export type GameInstanceID = string;

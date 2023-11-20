@@ -1,5 +1,5 @@
 import InvalidParametersError from '../../../../lib/InvalidParametersError';
-import { ChessColor, ChessMove, ChessSquare, IChessPiece } from '../../../../types/CoveyTownSocket';
+import { ChessColor, ChessMove, ChessBoardPosition, IChessPiece } from '../../../../types/CoveyTownSocket';
 
 export default class Queen implements IChessPiece {
   color: ChessColor;
