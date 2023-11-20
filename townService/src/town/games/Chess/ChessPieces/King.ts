@@ -1,12 +1,3 @@
-<<<<<<< Updated upstream
-import InvalidParametersError, { INVALID_MOVE_MESSAGE } from '../../../../lib/InvalidParametersError';
-import { ChessCell, ChessColor, ChessMove, ChessSquare, IChessPiece } from '../../../../types/CoveyTownSocket';
-
-export default class King implements IChessPiece {
-  color: ChessColor;
-  row: ChessSquare;
-  col: ChessSquare;
-=======
 import InvalidParametersError, {
   INVALID_MOVE_MESSAGE,
 } from '../../../../lib/InvalidParametersError';
@@ -24,15 +15,20 @@ export default class King implements IChessPiece {
   row: ChessBoardPosition;
 
   col: ChessBoardPosition;
->>>>>>> Stashed changes
 
-  type: 'K' | 'Q' | 'R' | 'B' | 'N' | 'P' | 'None';
+  canCastleShort: boolean;
+
+  canCastleLong: boolean;
+
+  type: 'K' | 'Q' | 'R' | 'B' | 'N' | 'P';
 
   constructor(color: ChessColor, row: ChessBoardPosition, col: ChessBoardPosition) {
     this.color = color;
     this.row = row;
     this.col = col;
     this.type = 'K';
+    this.canCastleShort = true;
+    this.canCastleLong = false;
   }
 
   validate_move(
@@ -41,10 +37,6 @@ export default class King implements IChessPiece {
     board: ChessCell[][],
     moves: ReadonlyArray<ChessMove>,
   ) {
-<<<<<<< Updated upstream
-
-    
-=======
     /* Move legality checklist:
      * First, check if the move is a castling move (just get this out of the way)
      * - newCol must be +/- 2 in either direction
@@ -73,7 +65,7 @@ export default class King implements IChessPiece {
         // trying to short castle
         this._shortCastleCheck(moves);
         return; // if no error was thrown, then we can make the move!
-      }      
+      }
       // trying to long castle
       this._longCastleCheck(moves);
       return; // if no error was thrown, then we can make the move!
@@ -175,7 +167,5 @@ export default class King implements IChessPiece {
         }
       });
     }
->>>>>>> Stashed changes
   }
-  
 }

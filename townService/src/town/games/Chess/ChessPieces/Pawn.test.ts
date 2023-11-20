@@ -1,9 +1,7 @@
-import InvalidParametersError, { INVALID_MOVE_MESSAGE } from '../../../../lib/InvalidParametersError';
-import { ChessCell, ChessColor, ChessMove, ChessSquare, IChessPiece } from '../../../../types/CoveyTownSocket';
+import { ChessCell, ChessMove } from '../../../../types/CoveyTownSocket';
 import Pawn from './Pawn';
 import Queen from './Queen';
 import King from './King';
-
 
 describe('ChessGame', () => {
     let pawn: Pawn;

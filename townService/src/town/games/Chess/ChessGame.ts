@@ -6,15 +6,15 @@ import InvalidParametersError, {
   PLAYER_NOT_IN_GAME_MESSAGE,
 } from '../../../lib/InvalidParametersError';
 import Player from '../../../lib/Player';
-<<<<<<< Updated upstream
-import { GameMove, ChessGameState, ChessMove, IChessPiece } from '../../../types/CoveyTownSocket';
-import Game from '../Game';
+import {
+  GameMove,
+  ChessGameState,
+  ChessMove,
+  ChessCell,
+  ChessBoardPosition,
+  ChessPiecePosition
+} from '../../../types/CoveyTownSocket';
 
-import Pawn from '../Chess/ChessPieces/Pawn'
-import King from '../Chess/ChessPieces/King'
-import Queen from '../Chess/ChessPieces/Queen'
-=======
-import { GameMove, ChessGameState, ChessMove, ChessCell, ChessBoardPosition, IChessPiece, ChessPiece, ChessPiecePosition } from '../../../types/CoveyTownSocket';
 import Game from '../Game';
 import Pawn from './ChessPieces/Pawn';
 import King from './ChessPieces/King';
@@ -23,77 +23,34 @@ import Rook from './ChessPieces/Rook';
 import Bishop from './ChessPieces/Bishop';
 import Knight from './ChessPieces/Knight';
 
->>>>>>> Stashed changes
 /**
  * A ChessGame is a Game that implements the rules of chess.
  * @see https://en.wikipedia.org/wiki/Rules_of_chess
  */
 export default class ChessGame extends Game<ChessGameState, ChessMove> {
-<<<<<<< Updated upstream
-=======
-  private board: ChessCell[][];
-  private pieces: ChessPiecePosition[];
->>>>>>> Stashed changes
+  board: ChessCell[][];
+  pieces: ChessPiecePosition[];
 
   public constructor() {
     super({
       pieces: [],
       moves: [],
       status: 'WAITING_TO_START',
-      board: ChessGame.createNewBoard(),
     });
-    
-<<<<<<< Updated upstream
-  }
-
-<<<<<<< Updated upstream
-
-  private get _board() {
-    const { moves } = this.state;
-    const board =  [
-      [undefined,undefined,undefined,new Queen("W",0,3),new King("W",0,4),undefined,undefined,undefined],
-        [new Pawn("W",1,0),new Pawn("W",1,1),new Pawn("W",2,3),new Pawn("W",1,3),new Pawn("W",1,4),new Pawn("W",1,5),new Pawn("W",1,6),new Pawn("W",1,7)],
-        [undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined],
-        [undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined],
-        [undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined],
-        [undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined],
-        [new Pawn("B",6,0),new Pawn("B",6,1),new Pawn("B",6,2),new Pawn("B",6,3),new Pawn("B",6,4),new Pawn("B",6,5),new Pawn("B",6,6),new Pawn("B",6,7)],
-        [undefined,undefined,undefined,new Queen("B",7,3),new King("B",7,4),undefined,undefined,undefined],
-      ];
-    for (const move of moves) {
-      const gp = move.gamePiece;
-        if (gp != undefined) {
-          board[gp?.row][gp?.col] = undefined;
-          board[move.newRow][move.newCol] = gp;
-        }
-    }
-    return board;
-=======
     this.board = ChessGame.createNewBoard();
     this.pieces = ChessGame.boardToPieceList(this.board);
->>>>>>> Stashed changes
   }
 
-=======
->>>>>>> Stashed changes
   private _checkForGameEnding() {
     let wk = 0;
     let bk = 0;
     for (let row = 0; row < 8; row++) {
       for (let col = 0; col < 8; col++) {
-<<<<<<< Updated upstream
-        if (super.state.board[row][col]?.type === 'K') {
-          if (super.state.board[row][col]?.color === 'W') {
-            wk += 1;
-          }
-          if (super.state.board[row][col]?.color === 'B') {
-=======
         if (this.board[row][col]?.type === 'K') {
           if (this.board[row][col]?.color === 'W') {
             wk += 1;
           }
           if (this.board[row][col]?.color === 'B') {
->>>>>>> Stashed changes
             bk += 1;
           }
         }
@@ -156,9 +113,6 @@ export default class ChessGame extends Game<ChessGameState, ChessMove> {
     this._checkForGameEnding();
   }
 
-<<<<<<< Updated upstream
-  private _validateMove(move: ChessMove) {
-=======
   /**
    * General move validation for a ChessMove. These checks apply
    * universally to every move that is made, regardless of piece type.
@@ -169,7 +123,6 @@ export default class ChessGame extends Game<ChessGameState, ChessMove> {
    * - Cannot take your own pieces
    */
   private _genericValidateMove(move: ChessMove) {
->>>>>>> Stashed changes
     // A move is only valid if it is the player's turn
     if (move.gamePiece.piece.color === 'W' && 
       this.state.moves.length % 2 === 1) {
@@ -178,26 +131,15 @@ export default class ChessGame extends Game<ChessGameState, ChessMove> {
       this.state.moves.length % 2 === 0) {
       throw new InvalidParametersError(MOVE_NOT_YOUR_TURN_MESSAGE);
     }
+
     // A move is valid only if game is in progress
     if (this.state.status !== 'IN_PROGRESS') {
       throw new InvalidParametersError(GAME_NOT_IN_PROGRESS_MESSAGE);
     }
-<<<<<<< Updated upstream
-    const ourColor = move.gamePiece?.color;
-<<<<<<< Updated upstream
-    const ourBoard = this._board;
-=======
-
->>>>>>> Stashed changes
-    // First Check if our dest space is
-    if (super.state.board[move.newRow][move.newCol]?.color === ourColor) {
-=======
-
     const ourColor = move.gamePiece.piece.color;
 
     // First Check if our dest space is clear, or not occupied by a friendly piece
     if (this.board[move.toRow][move.toCol]?.color === ourColor) {
->>>>>>> Stashed changes
       throw new InvalidParametersError(
         'INVALID MOVE: CANNOT TAKE YOUR OWN PIECE (ChessGame.ts - _validateMove)',
       );
@@ -205,20 +147,10 @@ export default class ChessGame extends Game<ChessGameState, ChessMove> {
   }
 
   /*
-   * TODO:
+   * TODO: Documentation
+   * note: we should change the naming convention here, it might get confusing.
    */
   public applyMove(move: GameMove<ChessMove>): void {
-<<<<<<< Updated upstream
-    this._validateMove(move.move);
-    move.move.gamePiece?.validate_move(
-      move.move.newRow,
-      move.move.newCol,
-<<<<<<< Updated upstream
-      this._board, 
-=======
-      super.state.board,
->>>>>>> Stashed changes
-=======
     const movePiece = this.board[move.move.gamePiece.rank][move.move.gamePiece.rank];
 
     if (!movePiece) {
@@ -231,7 +163,6 @@ export default class ChessGame extends Game<ChessGameState, ChessMove> {
       move.move.toRow,
       move.move.toCol,
       this.board,
->>>>>>> Stashed changes
       this.state.moves,
     );
     this._applyMove(move.move);
@@ -293,7 +224,6 @@ export default class ChessGame extends Game<ChessGameState, ChessMove> {
         moves: [],
         pieces: [],
         status: 'WAITING_TO_START',
-        board: super.state.board,
       };
       return;
     }
@@ -311,9 +241,6 @@ export default class ChessGame extends Game<ChessGameState, ChessMove> {
       };
     }
   }
-<<<<<<< Updated upstream
-=======
-
   /**
    * This function will create a brand new chessboard, with all the pieces properly placed
    * to start a new game.
@@ -379,5 +306,4 @@ export default class ChessGame extends Game<ChessGameState, ChessMove> {
           } as ChessPiecePosition;
         });
     }
->>>>>>> Stashed changes
 }

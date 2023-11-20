@@ -122,8 +122,14 @@ export interface IChessPiece {
   validate_move(newRow: ChessSquare, newCol: ChessSquare, board: ChessCell[][], moves: ReadonlyArray<ChessMove>);
 }
 
-export type ChessCell = IChessPiece | undefined;
+export type Bishop = IChessPiece;
+export type Rook = IChessPiece;
+export type Pawn = IChessPiece;
+export type Queen = IChessPiece;
+export type King = IChessPiece;
+export type Knight = IChessPiece;
 
+export type ChessCell = IChessPiece | undefined;
 export type ChessSquare = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
 export type ChessColor = 'W' | 'B';
 

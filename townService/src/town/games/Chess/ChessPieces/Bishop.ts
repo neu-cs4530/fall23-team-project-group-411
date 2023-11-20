@@ -25,7 +25,6 @@ export default class Bishop implements IChessPiece {
     this.type = 'B';
   }
 
-  
   validate_move(
     newRow: ChessBoardPosition,
     newCol: ChessBoardPosition,

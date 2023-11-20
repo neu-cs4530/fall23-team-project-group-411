@@ -24,7 +24,7 @@ export default function GameAreaFactory(
   if (gameType === 'TicTacToe') {
     return new TicTacToeGameArea(name, rect, broadcastEmitter);
   }
-    if (gameType === 'Chess') {
+  if (gameType === 'Chess') {
     return new ChessGameArea(name, rect, broadcastEmitter);
   }
   throw new Error(`Unknown game area type ${mapObject.class}`);
