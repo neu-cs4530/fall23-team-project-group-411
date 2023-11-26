@@ -8,12 +8,12 @@ import {
 } from '../../../lib/InvalidParametersError';
 import Player from '../../../lib/Player';
 import {
-  // GameInstanceID,
+  GameInstanceID,
   ChessGameState,
   ChessMove,
   TownEmitter,
-  // IChessPiece,
 } from '../../../types/CoveyTownSocket';
+import King from './ChessPieces/King';
 import * as ChessGameModule from './ChessGame';
 import ChessGameArea from './ChessGameArea';
 import Game from '../Game';
@@ -21,6 +21,7 @@ import Game from '../Game';
 class TestingGame extends Game<ChessGameState, ChessMove> {
   public constructor() {
     super({
+      pieces: [],
       moves: [],
       status: 'WAITING_TO_START',
     });
@@ -118,12 +119,24 @@ describe('ChessArea', () => {
         });
       });
     });
-    /* describe('[T3.2] when given a GameMove command', () => {
+    describe('[T3.2] when given a GameMove command', () => {
       it('should throw an error when there is no game in progress', () => {
-        const chessPiece : IChessPiece = {color: 'W', row: 1, col: 1, type: 'B', validate_move: () => ()}
+        const testPiece = new King('B', 0, 0);
         expect(() =>
           gameArea.handleCommand(
-            { type: 'ChessMove', move: { col: 0, row: 0, gamePiece: 'X' }, gameID: nanoid() },
+            {
+              type: 'ChessMove',
+              move: {
+                gamePiece: {
+                  piece: testPiece,
+                  rank: 0,
+                  file: 0,
+                },
+                toRow: 0,
+                toCol: 1,
+              },
+              gameID: nanoid(),
+            },
             player1,
           ),
         ).toThrowError(GAME_NOT_IN_PROGRESS_MESSAGE);
@@ -136,52 +149,98 @@ describe('ChessArea', () => {
           interactableUpdateSpy.mockClear();
         });
         it('should throw an error when the game ID does not match', () => {
+          const testPiece = new King('B', 0, 0);
+          const move: ChessMove = {
+            gamePiece: {
+              piece: testPiece,
+              rank: 0,
+              file: 0,
+            },
+            toRow: 0,
+            toCol: 1,
+          };
           expect(() =>
-            gameArea.handleCommand(
-              { type: 'GameMove', move: { col: 0, row: 0, gamePiece: 'X' }, gameID: nanoid() },
-              player1,
-            ),
+            gameArea.handleCommand({ type: 'ChessMove', move, gameID: nanoid() }, player1),
           ).toThrowError(GAME_ID_MISSMATCH_MESSAGE);
         });
         it('should dispatch the move to the game and call _emitAreaChanged', () => {
-          const move: ChessMove = { col: 0, row: 0, gamePiece: 'X' };
+          const testPiece = new King('B', 0, 0);
+          const move: ChessMove = {
+            gamePiece: {
+              piece: testPiece,
+              rank: 0,
+              file: 0,
+            },
+            toRow: 0,
+            toCol: 1,
+          };
           const applyMoveSpy = jest.spyOn(game, 'applyMove');
-          gameArea.handleCommand({ type: 'GameMove', move, gameID }, player1);
+          gameArea.handleCommand({ type: 'ChessMove', move, gameID }, player1);
           expect(applyMoveSpy).toHaveBeenCalledWith({
             gameID: game.id,
             playerID: player1.id,
             move: {
               ...move,
-              gamePiece: 'X',
+              gamePiece: {
+                piece: testPiece,
+                rank: 0,
+                file: 0,
+              },
+              toRow: 0,
+              toCol: 1,
             },
           });
           expect(interactableUpdateSpy).toHaveBeenCalledTimes(1);
         });
         it('should not call _emitAreaChanged if the game throws an error', () => {
-          const move: TicTacToeMove = { col: 0, row: 0, gamePiece: 'X' };
+          const testPiece = new King('B', 0, 0);
+          const move: ChessMove = {
+            gamePiece: {
+              piece: testPiece,
+              rank: 0,
+              file: 0,
+            },
+            toRow: 0,
+            toCol: 2,
+          };
           const applyMoveSpy = jest.spyOn(game, 'applyMove').mockImplementationOnce(() => {
             throw new Error('Test Error');
           });
           expect(() =>
-            gameArea.handleCommand({ type: 'GameMove', move, gameID }, player1),
+            gameArea.handleCommand({ type: 'ChessMove', move, gameID }, player1),
           ).toThrowError('Test Error');
           expect(applyMoveSpy).toHaveBeenCalledWith({
             gameID: game.id,
             playerID: player1.id,
             move: {
               ...move,
-              gamePiece: 'X',
+              gamePiece: {
+                piece: testPiece,
+                rank: 0,
+                file: 0,
+              },
+              toRow: 0,
+              toCol: 2,
             },
           });
           expect(interactableUpdateSpy).not.toHaveBeenCalled();
         });
         describe('when the game is over, it records a new row in the history and calls _emitAreaChanged', () => {
           test('when X wins', () => {
-            const move: TicTacToeMove = { col: 0, row: 0, gamePiece: 'X' };
+            const testPiece = new King('B', 0, 0);
+            const move: ChessMove = {
+              gamePiece: {
+                piece: testPiece,
+                rank: 0,
+                file: 0,
+              },
+              toRow: 0,
+              toCol: 1,
+            };
             jest.spyOn(game, 'applyMove').mockImplementationOnce(() => {
               game.endGame(player1.id);
             });
-            gameArea.handleCommand({ type: 'GameMove', move, gameID }, player1);
+            gameArea.handleCommand({ type: 'ChessMove', move, gameID }, player1);
             expect(game.state.status).toEqual('OVER');
             expect(gameArea.history.length).toEqual(1);
             expect(gameArea.history[0]).toEqual({
@@ -194,11 +253,20 @@ describe('ChessArea', () => {
             expect(interactableUpdateSpy).toHaveBeenCalledTimes(1);
           });
           test('when O wins', () => {
-            const move: TicTacToeMove = { col: 0, row: 0, gamePiece: 'O' };
+            const testPiece = new King('B', 0, 0);
+            const move: ChessMove = {
+              gamePiece: {
+                piece: testPiece,
+                rank: 0,
+                file: 0,
+              },
+              toRow: 0,
+              toCol: 1,
+            };
             jest.spyOn(game, 'applyMove').mockImplementationOnce(() => {
               game.endGame(player2.id);
             });
-            gameArea.handleCommand({ type: 'GameMove', move, gameID }, player2);
+            gameArea.handleCommand({ type: 'ChessMove', move, gameID }, player2);
             expect(game.state.status).toEqual('OVER');
             expect(gameArea.history.length).toEqual(1);
             expect(gameArea.history[0]).toEqual({
@@ -211,11 +279,20 @@ describe('ChessArea', () => {
             expect(interactableUpdateSpy).toHaveBeenCalledTimes(1);
           });
           test('when there is a tie', () => {
-            const move: TicTacToeMove = { col: 0, row: 0, gamePiece: 'X' };
+            const testPiece = new King('B', 0, 0);
+            const move: ChessMove = {
+              gamePiece: {
+                piece: testPiece,
+                rank: 0,
+                file: 0,
+              },
+              toRow: 0,
+              toCol: 1,
+            };
             jest.spyOn(game, 'applyMove').mockImplementationOnce(() => {
               game.endGame();
             });
-            gameArea.handleCommand({ type: 'GameMove', move, gameID }, player1);
+            gameArea.handleCommand({ type: 'ChessMove', move, gameID }, player1);
             expect(game.state.status).toEqual('OVER');
             expect(gameArea.history.length).toEqual(1);
             expect(gameArea.history[0]).toEqual({
@@ -229,7 +306,7 @@ describe('ChessArea', () => {
           });
         });
       });
-    }); */
+    });
     describe('[T3.3] when given a LeaveGame command', () => {
       describe('when there is no game in progress', () => {
         it('should throw an error', () => {

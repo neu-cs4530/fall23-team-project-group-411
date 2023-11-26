@@ -5,20 +5,20 @@ import {
   ChessCell,
   ChessColor,
   ChessMove,
-  ChessSquare,
+  ChessBoardPosition,
   IChessPiece,
 } from '../../../../types/CoveyTownSocket';
 
 export default class Rook implements IChessPiece {
   color: ChessColor;
 
-  row: ChessSquare;
+  row: ChessBoardPosition;
 
-  col: ChessSquare;
+  col: ChessBoardPosition;
 
   type: 'K' | 'Q' | 'R' | 'B' | 'N' | 'P';
 
-  constructor(color: ChessColor, row: ChessSquare, col: ChessSquare) {
+  constructor(color: ChessColor, row: ChessBoardPosition, col: ChessBoardPosition) {
     this.color = color;
     this.row = row;
     this.col = col;
@@ -26,8 +26,8 @@ export default class Rook implements IChessPiece {
   }
 
   validate_move(
-    newRow: ChessSquare,
-    newCol: ChessSquare,
+    newRow: ChessBoardPosition,
+    newCol: ChessBoardPosition,
     board: ChessCell[][],
     moves: ReadonlyArray<ChessMove>,
   ) {
@@ -51,9 +51,29 @@ export default class Rook implements IChessPiece {
     }
   }
 
-  private _isPathClear(newRow: ChessSquare, newCol: ChessSquare, board: ChessCell[][]) {
-    const rowIncrement = newRow > this.row ? 1 : newRow < this.row ? -1 : 0;
-    const colIncrement = newCol > this.col ? 1 : newCol < this.col ? -1 : 0;
+  private _isPathClear(
+    newRow: ChessBoardPosition,
+    newCol: ChessBoardPosition,
+    board: ChessCell[][],
+  ) {
+    let rowIncrement;
+    let colIncrement;
+
+    if (newRow > this.row) {
+      rowIncrement = 1;
+    } else if (newRow < this.row) {
+      rowIncrement = -1;
+    } else {
+      rowIncrement = 0;
+    }
+
+    if (newCol > this.col) {
+      colIncrement = 1;
+    } else if (newCol < this.col) {
+      colIncrement = -1;
+    } else {
+      colIncrement = 0;
+    }
 
     let currentRow = this.row + rowIncrement;
     let currentCol = this.col + colIncrement;

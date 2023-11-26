@@ -87,6 +87,7 @@ export interface GameState {
 export interface WinnableGameState extends GameState {
   winner?: PlayerID;
 }
+
 /**
  * Base type for a move in a game. Implementers should also extend MoveType
  * @see MoveType
@@ -97,10 +98,66 @@ export interface GameMove<MoveType> {
   move: MoveType;
 }
 
+// =============================
+// ======== CHESS TYPES ========
+// =============================
+export type ChessColor = 'W' | 'B';
+
+/**
+ * Represents a piece on a chessboard.
+ */
+export interface ChessPiece {
+  type: 'P' | 'K' | 'Q' | 'R' | 'B' | 'N';
+  color: ChessColor;
+};
+
+export type ChessBoardPosition = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
+export type ChessBoardSquare = ChessPiece | undefined;
+
+/**
+ * Represents where a ChessPiece is on the chessboard.
+ * Note:
+ */
+export interface ChessPiecePosition {
+  piece: ChessPiece;
+  row: ChessBoardPosition;
+  col: ChessBoardPosition;
+}
+
+/**
+ * Type for a move in Chess.
+ */
+export interface ChessMove {
+  gamePiece: ChessPiecePosition;
+  toRow: ChessBoardPosition;
+  toCol: ChessBoardPosition;
+}
+
+
+/**
+ * Type for the state of a Chess game
+ * The state of the game is represented as a list of ChessPiecePositions,
+ * and the playerIDs of the players (white and black).
+ * The first player to join the game is white, the second is black
+ */
+export interface ChessGameState extends WinnableGameState {
+  pieces: ChessPiecePosition[];
+  moves: ReadonlyArray<ChessMove>;
+  white?: PlayerID;
+  black?: PlayerID;
+}
+// =============================
+
+// =============================
+// ===== TIC TAC TOE TYPES =====
+// =============================
+/**
+ * Represents a grid index for TicTacToe.
+ */
 export type TicTacToeGridPosition = 0 | 1 | 2;
 
 /**
- * Type for a move in TicTacToe
+ * Type for a move in TicTacToe.
  */
 export interface TicTacToeMove {
   gamePiece: 'X' | 'O';
@@ -108,62 +165,17 @@ export interface TicTacToeMove {
   col: TicTacToeGridPosition;
 }
 
-
-
-export interface IChessPiece {
-  color: ChessColor;
-  row: ChessSquare;
-  col: ChessSquare;
-  type: 'K' | 'Q' | 'R' | 'B' | 'N' | 'P' | 'None';
-
-  validate_move(newRow: ChessSquare, newCol: ChessSquare, board: ChessCell[][], moves: ReadonlyArray<ChessMove>);
-}
-
-export type Bishop = IChessPiece;
-export type Rook = IChessPiece;
-export type Pawn = IChessPiece;
-export type Queen = IChessPiece;
-export type King = IChessPiece;
-export type Knight = IChessPiece;
-
-export type ChessCell = IChessPiece | undefined;
-export type ChessSquare = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
-export type ChessColor = 'W' | 'B';
-
-
 /**
- * Type for a move in Chess
- */
-export interface ChessMove {
-  gamePiece: IChessPiece | undefined;
-  newRow : ChessSquare;
-  newCol : ChessSquare;
-}
-
-/**
- * Type for the state of a Chess game
- * The state of the game is represented as a list of moves, and the playerIDs of the players (white and black)
- * The first player to join the game is white, the second is black
- */
-export interface ChessGameState extends WinnableGameState {
-  moves: ReadonlyArray<ChessMove>;
-  white?: PlayerID;
-  black?: PlayerID;
-}
-
-
-/**
- * Type for the state of a TicTacToe game
- * The state of the game is represented as a list of moves, and the playerIDs of the players (x and o)
- * The first player to join the game is x, the second is o
+ * Type for the state of a TicTacToe game.
+ * The state of the game is represented as a list of moves, and the playerIDs of the players (x and o).
+ * The first player to join the game is x, the second is o.
  */
 export interface TicTacToeGameState extends WinnableGameState {
   moves: ReadonlyArray<TicTacToeMove>;
   x?: PlayerID;
   o?: PlayerID;
 }
-
-
+// =============================
 
 export type InteractableID = string;
 export type GameInstanceID = string;
@@ -238,7 +250,6 @@ export interface GameMoveCommand<MoveType> {
   move: MoveType;
 }
 
-// HZ_NOTE: this shouldn't be needed, since we can just specify MoveType
 export interface ChessMoveCommand {
   type: 'ChessMove';
   gameID: GameInstanceID;

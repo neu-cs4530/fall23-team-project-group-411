@@ -28,10 +28,7 @@ import TicTacToeLeaderboard from '../Leaderboard';
 import ChessBoard from './ChessBoard';
 
 /**
- * Chess Area Component
- *
- * TODO: Remove TicTacToe influences, change over to Chess
- *
+ * Chess Area Component.
  */
 function ChessArea({ interactableID }: { interactableID: InteractableID }): JSX.Element {
   const gameAreaController = useInteractableAreaController<ChessAreaController>(interactableID);
@@ -131,7 +128,7 @@ function ChessArea({ interactableID }: { interactableID: InteractableID }): JSX.
   }
 
   return (
-    <Container>
+    <Container maxW={'592px'} alignContent='center'>
       <Accordion allowToggle>
         <AccordionItem>
           <Heading as='h3'>
@@ -158,7 +155,7 @@ function ChessArea({ interactableID }: { interactableID: InteractableID }): JSX.
           <AccordionPanel>
             <List aria-label='list of observers in the game'>
               {observers.map(player => {
-                return <ListItem key={player.id}>{player.userName}</ListItem>;
+                return <ListItem key={player.id}>{player.userName}</ListItem>
               })}
             </List>
           </AccordionPanel>
@@ -169,15 +166,15 @@ function ChessArea({ interactableID }: { interactableID: InteractableID }): JSX.
         <ListItem>White: {white?.userName || '(No player yet!)'}</ListItem>
         <ListItem>Black: {black?.userName || '(No player yet!)'}</ListItem>
       </List>
-      <ChessBoard gameAreaController={gameAreaController} />
+      <ChessBoard gameAreaController={gameAreaController}/>
     </Container>
   );
 }
 
 /**
- * A wrapper component for the TicTacToeArea component.
+ * A wrapper component for the ChessArea component.
  * Determines if the player is currently in a chess area on the map, and if so,
- * renders the TicTacToeArea component in a modal.
+ * renders the ChessArea component in a modal.
  *
  */
 export default function ChessAreaWrapper(): JSX.Element {
@@ -192,14 +189,14 @@ export default function ChessAreaWrapper(): JSX.Element {
   }, [townController, gameArea]);
 
   if (gameArea && gameArea.getData('type') === 'Chess') {
-    console.log('IN CHESS AREA')
+    console.log('IN CHESS AREA');
     return (
-      <Modal isOpen={true} onClose={closeModal} closeOnOverlayClick={false}>
+      <Modal isOpen={true} onClose={closeModal} closeOnOverlayClick={false} size={'4xl'}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>{gameArea.name}</ModalHeader>
           <ModalCloseButton />
-          <ChessArea interactableID={gameArea.name} />;
+          <ChessArea interactableID={gameArea.name}/>
         </ModalContent>
       </Modal>
     );

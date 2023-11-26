@@ -5,20 +5,20 @@ import {
   ChessCell,
   ChessColor,
   ChessMove,
-  ChessSquare,
+  ChessBoardPosition,
   IChessPiece,
 } from '../../../../types/CoveyTownSocket';
 
 export default class Knight implements IChessPiece {
   color: ChessColor;
 
-  row: ChessSquare;
+  row: ChessBoardPosition;
 
-  col: ChessSquare;
+  col: ChessBoardPosition;
 
   type: 'K' | 'Q' | 'R' | 'B' | 'N' | 'P';
 
-  constructor(color: ChessColor, row: ChessSquare, col: ChessSquare) {
+  constructor(color: ChessColor, row: ChessBoardPosition, col: ChessBoardPosition) {
     this.color = color;
     this.row = row;
     this.col = col;
@@ -26,8 +26,8 @@ export default class Knight implements IChessPiece {
   }
 
   validate_move(
-    newRow: ChessSquare,
-    newCol: ChessSquare,
+    newRow: ChessBoardPosition,
+    newCol: ChessBoardPosition,
     board: ChessCell[][],
     moves: ReadonlyArray<ChessMove>,
   ) {
@@ -40,17 +40,22 @@ export default class Knight implements IChessPiece {
      */
 
     // We are dealing with a "column L"
-    if (Math.abs(newCol - this.col) === 2) {
-      if (Math.abs(newRow - this.row) !== 1) {
-        throw new InvalidParametersError(INVALID_MOVE_MESSAGE);
-      }
+    if (
+      Math.abs(newCol - this.col) === 2 &&
+      Math.abs(newRow - this.row) === 1 &&
+      (board[newRow][newCol] === undefined || board[newRow][newCol]?.color !== this.color)
+    ) {
+      return;
     }
 
     // We are dealing with a "row L"
-    if (Math.abs(newRow - this.row) === 2) {
-      if (Math.abs(newCol - this.col) !== 1) {
-        throw new InvalidParametersError(INVALID_MOVE_MESSAGE);
-      }
+    if (
+      Math.abs(newRow - this.row) === 2 &&
+      Math.abs(newCol - this.col) === 1 &&
+      (board[newRow][newCol] === undefined || board[newRow][newCol]?.color !== this.color)
+    ) {
+      return;
     }
+    throw new InvalidParametersError(INVALID_MOVE_MESSAGE);
   }
 }

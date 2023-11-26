@@ -113,7 +113,6 @@ export default class ChessGameArea extends GameArea<ChessGame> {
       this._stateUpdated(game.toModel());
       return undefined as InteractableCommandReturnType<CommandType>;
     }
-
     throw new InvalidParametersError(INVALID_COMMAND_MESSAGE);
   }
 }
